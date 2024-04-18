@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "password": "1234",
+      "email": "azamov521o@gmail.com",
+      "id": "8d5c"
+    },
+    {
+      "id": "abee",
+      "name": "Otabek",
+      "email": "Otabek@gmail.com",
+      "password": "1234"
+    }
+  ]
+}
