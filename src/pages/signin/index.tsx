@@ -4,43 +4,33 @@ import Button from '@mui/material/Button';
 import { TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState} from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 
 const index = () => {
-   const url = 'http://localhost:3000'
-   const [data, setData]:any = useState([])
    const navigate = useNavigate()
-   function getData(){
-      axios.get(url + '/users').then(response => setData(response.data));
-   }
 
-   function formSubmit(e: any) {
+   async function formSubmit(e: any) {
       e.preventDefault();
-      let username = e.target[0].value
-      let password = e.target[2].value
-      if(username.trim().length && password.trim().length){
-           data.forEach((element:any) => {
-               if(username == element.name && password == element.password){
-                  localStorage.setItem('token', "token" + Math.trunc(Math.random() * 2000))
-                  navigate('/mainlayout')
-               }
-           });
-      }else{
-         alert("Please fill all the fields")
+      const user = {
+         username: e.target[0].value,
+         password: e.target[2].value
       }
-   }
-
-   useEffect(() => {
-      getData()
-   }, [])
-
-   if(localStorage.getItem('token')){
-      navigate('/mainlayout')
+      
+      axios.post('http://45.138.158.252:3000/auth/login', user).then((response) => {
+         if(response.status === 201){
+            localStorage.setItem('token', response.data.accessToken)
+            toast.success("Login successfuly", { autoClose: 1200})
+            setTimeout(() => {
+               navigate('/mainlayout')
+            }, 1600);
+         }
+      })
    }
 
     return (
        <>
+       <ToastContainer/>
           <Section>
                 <div className="w-[600px] mx-auto mt-[200px] border p-[40px]">
                      <form onSubmit={(e) => formSubmit(e)}>

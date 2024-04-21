@@ -11,6 +11,12 @@
       "name": "Otabek",
       "email": "Otabek@gmail.com",
       "password": "1234"
+    },
+    {
+      "id": "972c",
+      "name": "otabek",
+      "email": "otabek@gmail.com",
+      "password": "1234"
     }
   ]
 }

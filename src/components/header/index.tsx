@@ -53,7 +53,7 @@ export default function index() {
         />
       </FormGroup> */}
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className='bg-[#202764]'>
           <IconButton
             size="large"
             edge="start"
