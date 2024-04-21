@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ReactNode, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -21,15 +21,15 @@ export default function index() {
   }
 
 
-  function renderBrands(e:any){
+  function postBrands(e:any){
       e.preventDefault();
       let new_brand = e.target[0].value
       
-      // axios.post('http://45.138.158.252:3000/brands', new_brand, {
-      //   headers:{
-      //     'Authorization' : 'Bearer ' + token
-      //   }
-      // }).then(response => console.log(response));
+      axios.post('http://45.138.158.252:3000/brands', new_brand, {
+        headers:{
+          'Authorization' : 'Bearer ' + token
+        }
+      });
       
   }
 
@@ -50,7 +50,7 @@ export default function index() {
             Add Brands
           </AccordionSummary>
           <AccordionDetails>
-              <form id="brand_form" onSubmit={(e) => renderBrands(e)}>
+              <form id="brand_form" onSubmit={(e) => postBrands(e)}>
                 <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Brands" variant="standard" />
                 <AccordionActions>
                   <Button id="brand_form" type="submit">Agree</Button>
@@ -58,7 +58,17 @@ export default function index() {
               </form>
           </AccordionDetails>
         </Accordion>
-  </div>  
+      </div>
+      <div className="mt-[100px]">
+        <h1 className="font-bold text-[40px] mb-[30px] text-center">BRANDS LIST</h1>
+          {
+            brands.map((data):any => {
+              return (
+                <h1 key={data.id} className="p-[10px] mb-[10px] font-bold bg-[#14224e] text-white"> {data.name}</h1>
+              )
+           })
+          }
+      </div>  
     </>
   )
 }
