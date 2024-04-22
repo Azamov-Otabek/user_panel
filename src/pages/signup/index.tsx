@@ -4,11 +4,12 @@ import { Section } from "@containers";
 import Button from "@mui/material/Button";
 import { TextField } from "@mui/material";
 import axios from "axios";
-import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useState } from "react";
 
 const index = () => {
   let navigate = useNavigate();
+  const [error, setError] = useState({})
 
   async function formSubmit(e: any) {
     e.preventDefault();
@@ -17,7 +18,36 @@ const index = () => {
       password: e.target[2].value,
       phone: e.target[4].value,
     };
-    axios
+
+    let errormessage = {
+      username: "",
+      password: "",
+      phone: "",
+    }
+    setError(errormessage)
+
+    if(user.username.trim().length < 1) {
+      errormessage.username = "Username is required"
+    }else if(user.username.trim().length < 6 ) {
+      errormessage.username = "Username minumim 6 characters"
+    }
+
+    if(user.password.trim().length == 0) {
+      errormessage.password = "Password is required"
+    }else if(user.password.trim().length < 6){
+      errormessage.password = "Password minumim 6 characters"
+    }
+
+    if(user.phone.trim().length == 0) {
+      errormessage.phone = "Phone is required"
+    }else if(user.phone.trim().length < 6){
+      errormessage.phone = "Phone minumim 6 characters"
+    }
+    
+    setError(errormessage)
+
+    if(errormessage.username == "" && errormessage.password == "" && errormessage.phone == ""){
+      axios
       .post("http://45.138.158.252:3000/auth/register", user)
       .then((response) => {
         if (response.status == 201) {
@@ -25,11 +55,25 @@ const index = () => {
           setTimeout(() => {
             navigate("/");
           }, 1600);
-        } else {
+        }
+      }).catch(error=>{
+        if(error.response.status != 201) {
           toast.error("Something went wrong", { autoClose: 1200 });
         }
       });
+    } 
   }
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <>
@@ -45,6 +89,7 @@ const index = () => {
                 variant="outlined"
                 className="w-full"
               />
+              {error && <p className="text-[red] font-medium">{error.username}</p>}
             </label>
             <label className="block w-full mb-[30px]">
               <TextField
@@ -55,6 +100,7 @@ const index = () => {
                 variant="outlined"
                 className="w-full"
               />
+              {error && <p className="text-[red] font-medium">{error.password}</p>}
             </label>
             <label className="block w-full mb-[30px]">
               <TextField
@@ -64,6 +110,7 @@ const index = () => {
                 variant="outlined"
                 className="w-full"
               />
+              {error && <p className="text-[red] font-medium">{error.phone}</p>}
             </label>
             <div className="flex flex-col gap-[20px]">
               <Button variant="contained" type="submit" className="w-full">

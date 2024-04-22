@@ -1,4 +1,3 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -7,30 +6,22 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
+import https from "@plugins/axios.js"
 
 export default function index() {
-  let token = localStorage.getItem('token')
   let [brands, setBrands] = useState([])
   function getBrands(){
-     axios.get('http://45.138.158.252:3000/brands', {
-        headers:{
-          'Authorization' : 'Bearer ' + token
-        }
-     }).then(response => setBrands(response.data));
+      https.get('/brands').then(response => setBrands(response.data))
   }
 
 
   function postBrands(e:any){
       e.preventDefault();
-      let new_brand = e.target[0].value
-      
-      axios.post('http://45.138.158.252:3000/brands', new_brand, {
-        headers:{
-          'Authorization' : 'Bearer ' + token
-        }
-      });
-      
+      let new_brand = {
+      name:  e.target[0].value
+      }       
+      https.post('/brands', new_brand)
   }
 
   useEffect(() =>{
@@ -62,7 +53,7 @@ export default function index() {
       <div className="mt-[100px]">
         <h1 className="font-bold text-[40px] mb-[30px] text-center">BRANDS LIST</h1>
           {
-            brands.map((data):any => {
+            brands.map((data) => {
               return (
                 <h1 key={data.id} className="p-[10px] mb-[10px] font-bold bg-[#14224e] text-white"> {data.name}</h1>
               )

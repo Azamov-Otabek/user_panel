@@ -1,4 +1,3 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -7,18 +6,26 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer} from "react-toastify";
+import https from '@plugins/axios.js'
 
 export default function index() {
-  let token = localStorage.getItem('token')
+  let [image, setImage] = useState('')
+  let [modelbrand, setmodelbrand] = useState([])
+  let [brandId, setbrandId] = useState([])
   let [brands, setBrands] = useState([])
+  let [selectedbrand, setSelectedbrand] = useState('');
+  let [selectedmodel, setSelectedmodel] = useState('');
+
+
+
+
   function getBrands(){
-     axios.get('http://45.138.158.252:3000/products', {
-        headers:{
-          'Authorization' : 'Bearer ' + token
-        }
-     }).then(response => setBrands(response.data));
-    }
+        https.get('/products').then(response => setBrands(response.data))
+        https.get('/models').then(response => setmodelbrand(response.data))
+        https.get('/brands').then(response => setbrandId(response.data))
+  }
+
 
 
   function postBrands(e:any){
@@ -26,20 +33,24 @@ export default function index() {
       let new_brand = {
         name: e.target[0].value,
         price: +e.target[1].value,
-        imageUr: e.target[2].value,
-        modelId: +e.target[3].value,
-        brandId: +e.target[4].value
+        imageUrl: image,
+        modelId: +e.target[2].value,
+        brandId: +e.target[3].value
       }
-      
-      axios.post('http://45.138.158.252:3000/products', new_brand, {
-        headers:{
-          'Authorization' : 'Bearer ' + token
-        }
-      });
-
-      getBrands()
-      
+      console.log(new_brand);
+      if(new_brand.name.trim().length && new_brand.price && new_brand.modelId && new_brand.brandId && new_brand.imageUrl.length){
+        https.post('/products', new_brand)
+      }
+      console.log(new_brand);
   }
+
+ function imagePost(e:any){
+    e.preventDefault();
+    let imageURL = new FormData()
+    imageURL.append('file', e.target.files[0])
+    https.post('/images/upload', imageURL).then(response => setImage(response.data.path));
+ }
+
 
   useEffect(() =>{
     getBrands()
@@ -61,9 +72,29 @@ export default function index() {
               <form id="brand_form" onSubmit={(e) => postBrands(e)}>
                 <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Producs name" variant="standard" />
                 <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Producs price" variant="standard" />
-                <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Producs imageURL" variant="standard" />
-                <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Producs modelId" variant="standard" />
-                <TextField autoComplete="off" className="w-full " id="standard-basic" label="Enter your Producs brandId" variant="standard" />
+                <div className="flex gap-10">
+                  <select className=" w-[218px] p-[10px] outline-none bg-[#20205f] mt-[20px] rounded-lg text-white font-bold">
+                    <option disabled selected>Enter your models</option>
+                      {modelbrand.map(product => {
+                        return (
+                          <option value={product.id}>{product.name}</option>
+                        )
+                      })}
+                  </select>
+                  <select className="w-[218px] p-[10px] outline-none bg-[#20205f] mt-[20px] rounded-lg text-white font-bold">
+                    <option disabled selected>Enter your brands</option>
+                      {brandId.map(product => {
+                        return (
+                          <option value={product.id}>{product.name}</option>
+                        )
+                      })}
+                  </select>
+                </div>
+
+                <div className="mt-[20px] mb-[10px] relative">
+                  <input onChange={imagePost} className="opacity-0 w-[215px] relative z-10 p-[10px] " type="file" placeholder="Enter your Photo products"/>
+                  <button className="bg-[#20205f] absolute left-0 p-[10px] rounded-lg text-white font-bold">Enter your Photo products</button>
+                </div>
                 <AccordionActions>
                   <Button id="brand_form" type="submit">Agree</Button>
                 </AccordionActions>

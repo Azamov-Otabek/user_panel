@@ -17,6 +17,19 @@ const index = () => {
          password: e.target[2].value
       }
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       axios.post('http://45.138.158.252:3000/auth/login', user).then((response) => {
          if(response.status === 201){
             localStorage.setItem('token', response.data.accessToken)
