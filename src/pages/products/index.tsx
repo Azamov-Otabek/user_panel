@@ -7,26 +7,20 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
 import { ToastContainer} from "react-toastify";
-import https from '@plugins/axios.js'
+import {getItem, postItem} from "@plugins/httpModels.js"
+
 
 export default function index() {
   let [image, setImage] = useState('')
   let [modelbrand, setmodelbrand] = useState([])
   let [brandId, setbrandId] = useState([])
   let [brands, setBrands] = useState([])
-  let [selectedbrand, setSelectedbrand] = useState('');
-  let [selectedmodel, setSelectedmodel] = useState('');
-
-
-
 
   function getBrands(){
-        https.get('/products').then(response => setBrands(response.data))
-        https.get('/models').then(response => setmodelbrand(response.data))
-        https.get('/brands').then(response => setbrandId(response.data))
+        getItem('/products').then(response => setBrands(response.data))
+        getItem('/models').then(response => setmodelbrand(response.data))
+        getItem('/brands').then(response => setbrandId(response.data))
   }
-
-
 
   function postBrands(e:any){
       e.preventDefault();
@@ -39,16 +33,15 @@ export default function index() {
       }
       console.log(new_brand);
       if(new_brand.name.trim().length && new_brand.price && new_brand.modelId && new_brand.brandId && new_brand.imageUrl.length){
-        https.post('/products', new_brand)
+        postItem('/products', new_brand)
       }
-      console.log(new_brand);
   }
 
  function imagePost(e:any){
     e.preventDefault();
     let imageURL = new FormData()
     imageURL.append('file', e.target.files[0])
-    https.post('/images/upload', imageURL).then(response => setImage(response.data.path));
+    postItem('/images/upload', imageURL).then(response => setImage(response.data.path));
  }
 
 

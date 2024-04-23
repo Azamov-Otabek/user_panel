@@ -7,21 +7,21 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
 import { ToastContainer} from "react-toastify";
-import https from "@plugins/axios.js"
+import {getItem, postItem} from "@plugins/httpModels.js"
 
 export default function index() {
   let [brands, setBrands] = useState([])
-  function getBrands(){
-      https.get('/brands').then(response => setBrands(response.data))
+  async function getBrands(){
+      await getItem('/brands').then(response => setBrands(response.data))
   }
 
 
-  function postBrands(e:any){
+  async function postBrands(e:any){
       e.preventDefault();
       let new_brand = {
       name:  e.target[0].value
       }       
-      https.post('/brands', new_brand)
+      await postItem('/brands', new_brand)
   }
 
   useEffect(() =>{

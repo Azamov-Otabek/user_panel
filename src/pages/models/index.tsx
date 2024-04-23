@@ -7,12 +7,12 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
 import { ToastContainer } from "react-toastify";
-import https from "@plugins/axios.js"
+import {getItem, postItem} from "@plugins/httpModels.js"
 
 export default function index() {
   let [brands, setBrands] = useState([])
   function getBrands(){
-     https.get('/models').then(response => setBrands(response.data))
+     getItem('/models').then(response => setBrands(response.data))
   }
 
 
@@ -21,7 +21,7 @@ export default function index() {
       let new_brand = {
         name: e.target[0].value
       }
-     https.post('/models', new_brand)
+    postItem('/models', new_brand)
       
   }
 

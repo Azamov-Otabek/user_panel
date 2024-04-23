@@ -1,15 +1,26 @@
-import { Link, useNavigate } from "react-router-dom";
 import "./style.scss";
+import { Link, useNavigate } from "react-router-dom";
 import { Section } from "@containers";
 import Button from "@mui/material/Button";
 import { TextField } from "@mui/material";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useState } from "react";
+import * as yup from 'yup';
+import {register} from "@plugins/auth.js"
 
 const index = () => {
   let navigate = useNavigate();
-  const [error, setError] = useState({})
+  const [error, setError] = useState({
+    username: "" ,
+    password: "",
+    phone: "",
+  })
+
+  const userValidate = yup.object().shape({
+    username: yup.string().min(6, "User need min 6 characters").required('Username is required'),
+    password: yup.string().min(6, "Password need min 6 characters").required('Password is required'),
+    phone: yup.string().matches(/^\+998\d{9}$/, 'Nomer togri kelmayapti !').required('Phone number is required')
+})
 
   async function formSubmit(e: any) {
     e.preventDefault();
@@ -19,61 +30,26 @@ const index = () => {
       phone: e.target[4].value,
     };
 
-    let errormessage = {
-      username: "",
-      password: "",
-      phone: "",
+    try{
+      await userValidate.validate(user, {abortEarly: false});
+      let errormessage = {username: "" , password: "", phone: ""}
+      setError(errormessage)
+      const response = await register('/auth/register', user)
+      if(response.status == 201){
+        toast.success("Successfully registered", { autoClose: 1200 });
+        setTimeout(() => {
+          navigate("/");
+        }, 1600);
+      }
+    }catch(err:any){
+      toast.error("Something went wrong", { autoClose: 1200 });  
+      let validateError = {}
+      err.inner.forEach(errorr => {
+        validateError[errorr.path] = errorr.message
+      })
+      setError(validateError)
     }
-    setError(errormessage)
-
-    if(user.username.trim().length < 1) {
-      errormessage.username = "Username is required"
-    }else if(user.username.trim().length < 6 ) {
-      errormessage.username = "Username minumim 6 characters"
-    }
-
-    if(user.password.trim().length == 0) {
-      errormessage.password = "Password is required"
-    }else if(user.password.trim().length < 6){
-      errormessage.password = "Password minumim 6 characters"
-    }
-
-    if(user.phone.trim().length == 0) {
-      errormessage.phone = "Phone is required"
-    }else if(user.phone.trim().length < 6){
-      errormessage.phone = "Phone minumim 6 characters"
-    }
-    
-    setError(errormessage)
-
-    if(errormessage.username == "" && errormessage.password == "" && errormessage.phone == ""){
-      axios
-      .post("http://45.138.158.252:3000/auth/register", user)
-      .then((response) => {
-        if (response.status == 201) {
-          toast.success("Successfully registered", { autoClose: 1200 });
-          setTimeout(() => {
-            navigate("/");
-          }, 1600);
-        }
-      }).catch(error=>{
-        if(error.response.status != 201) {
-          toast.error("Something went wrong", { autoClose: 1200 });
-        }
-      });
-    } 
   }
-
-
-
-
-
-
-
-
-
-
-
 
   return (
     <>
