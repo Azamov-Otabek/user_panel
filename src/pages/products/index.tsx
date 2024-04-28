@@ -10,7 +10,8 @@ import { ToastContainer} from "react-toastify";
 import {getItem, postItem} from "@plugins/httpModels.js"
 
 
-export default function index() {
+export default function index(props:any) {
+  const {tbody, thead} = props;
   let [image, setImage] = useState('')
   let [modelbrand, setmodelbrand] = useState([])
   let [brandId, setbrandId] = useState([])

@@ -6,9 +6,13 @@ const login = async(url, data) => {
     return response
 }
 
-const register = async(url) => {
-    const response = await https.post(url, data)
-    return response
+const register = async(url, data) => {
+    try{
+        const response = await https.post(url, data)
+        return response
+    }catch(err){
+        return err
+    }
 }
 
 export { login, register }

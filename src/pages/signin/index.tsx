@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { TextField } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import {login} from '@plugins/auth'
+import {login} from '@plugins/auth.js'
 import * as yup from 'yup'
 import { useState } from "react";
 
@@ -37,6 +37,7 @@ const index = () => {
             }, 1600);
          }
       }catch(err){
+         console.log(1);
          let validateError = { username: '', password: '',}
          setError(validateError);
          err.inner.forEach(errorr => {
@@ -57,7 +58,7 @@ const index = () => {
                            {error && <p className="text-[red] font-medium">{error.username}</p>}
                         </label>
                         <label className="block w-full mb-[30px]">
-                           <TextField  autoComplete="off" id="outlined-basic" label="Enter your password" variant="outlined" className="w-full"/>
+                           <TextField  autoComplete="off" id="outlined-basic" label="Enter your password" type="password" variant="outlined" className="w-full"/>
                            {error && <p className="text-[red] font-medium">{error.password}</p>}
                         </label>
                         <div className="flex flex-col gap-[20px]">
