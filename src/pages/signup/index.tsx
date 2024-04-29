@@ -7,8 +7,10 @@ import { ToastContainer, toast } from "react-toastify";
 import * as yup from 'yup';
 import {register} from "@plugins/auth.js"
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import crudFactory from "../../store"
 
 const index = () => {
+  const {register} = crudFactory()
   let navigate = useNavigate();
   const userValidate = yup.object().shape({
     username: yup.string().min(6, "User need min 6 characters").required('Username is required'),
@@ -24,7 +26,7 @@ const index = () => {
 
   async function formSubmit(value:any) {
       try{
-        const response = await register('/auth/register', value )
+        const response = await register(value)
           if(response.status == 201){
             toast.success("Successfully registered", { autoClose: 1200 });
             setTimeout(() => {

@@ -7,10 +7,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
 import { ToastContainer } from "react-toastify";
-import {getItem, postItem} from "@plugins/httpModels.js"
+import crudFactory from "../../store";
 
 export default function index() {
   let [brands, setBrands] = useState([])
+  const {getItem, postItem} = crudFactory();
   function getBrands(){
      getItem('/models').then(response => setBrands(response.data))
   }
@@ -22,6 +23,7 @@ export default function index() {
         name: e.target[0].value
       }
     postItem('/models', new_brand)
+    getBrands()
       
   }
 

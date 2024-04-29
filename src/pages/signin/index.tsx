@@ -7,9 +7,11 @@ import { toast, ToastContainer } from "react-toastify";
 import {login} from '@plugins/auth.js'
 import * as yup from 'yup'
 import { useState } from "react";
+import crudFactory from "../../store";
 
 const index = () => {
    const navigate = useNavigate()
+   const {login} = crudFactory()
    const [error, setError] = useState({
       username: '',
       password: '',
@@ -29,7 +31,7 @@ const index = () => {
          let validateError = { username: '', password: '',}
          setError(validateError);
          await userValidate.validate(user, {abortEarly: false})
-         const response = await login("/auth/login",user)
+         const response = await login(user)
          if(response.status === 201){
             toast.success("Login successfuly", { autoClose: 1200})
             setTimeout(() => {

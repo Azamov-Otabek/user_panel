@@ -7,11 +7,12 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AccordionActions from '@mui/material/AccordionActions';
 import { ToastContainer} from "react-toastify";
-import {getItem, postItem} from "@plugins/httpModels.js"
+import crudFactory from "../../store";
+
 
 
 export default function index(props:any) {
-  const {tbody, thead} = props;
+  const {getItem, postItem} = crudFactory();
   let [image, setImage] = useState('')
   let [modelbrand, setmodelbrand] = useState([])
   let [brandId, setbrandId] = useState([])
@@ -36,6 +37,7 @@ export default function index(props:any) {
       if(new_brand.name.trim().length && new_brand.price && new_brand.modelId && new_brand.brandId && new_brand.imageUrl.length){
         postItem('/products', new_brand)
       }
+      getBrands()
   }
 
  function imagePost(e:any){
